@@ -12,6 +12,7 @@ import { Post } from './post.model';
 export class AppComponent implements OnInit {
   loadedPosts: Post[] = [];
   url: string = 'https://ng-http-start-aa1e8-default-rtdb.europe-west1.firebasedatabase.app/posts.json';
+  isFetching = false;
 
   constructor(private http: HttpClient) {}
   ngOnInit() {
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit {
   //map operator - allow to get some data and return new data which is rewrapped into an observable
   //tell which type of object the retrieved data is -> <{[key: string]: Post}>
   private fetchPosts() {
+    this.isFetching = true;
     this.http
       .get<{[key: string]: Post}>(this.url)
       .pipe(map(responseData => {
@@ -59,6 +61,7 @@ export class AppComponent implements OnInit {
         return postsArray;
       }))
       .subscribe(posts => {
+        this.isFetching = false;
         this.loadedPosts = posts;
       });
   }
