@@ -20,7 +20,9 @@ export class PostsService {
     .post<{name: string}>(
       this.url,
       postData
-    ).subscribe(responseData => {
+    )
+    //if a component doesn't care about the response - subscribe in service is okay
+    .subscribe(responseData => {
       console.log(responseData);
     });
   }
@@ -28,8 +30,9 @@ export class PostsService {
   //transform data with pipe
   //map operator - allow to get some data and return new data which is rewrapped into an observable
   //tell which type of object the retrieved data is -> <{[key: string]: Post}>
-  fetchPost(){
-    this.http
+  fetchPosts(){
+    //setting up in service and subscribing in the component
+    return this.http
       .get<{[key: string]: Post}>(this.url)
       .pipe(map(responseData => {
         const postsArray: Post[] = [];
@@ -40,9 +43,7 @@ export class PostsService {
           }
         }
         return postsArray;
-      }))
-      .subscribe(posts => {
-
-      });
+      })
+    );
   }
 }
