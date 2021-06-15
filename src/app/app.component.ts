@@ -10,7 +10,7 @@ import { Post } from './post.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  loadedPosts = [];
+  loadedPosts: Post[] = [];
   url: string = 'https://ng-http-start-aa1e8-default-rtdb.europe-west1.firebasedatabase.app/posts.json';
 
   constructor(private http: HttpClient) {}
@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
         return postsArray;
       }))
       .subscribe(posts => {
-        console.log(posts);
+        this.loadedPosts = posts;
       });
   }
 }
