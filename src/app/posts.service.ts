@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Post } from "./post.model";
 import { map, catchError } from 'rxjs/operators';
@@ -21,7 +21,10 @@ export class PostsService {
     this.http
     .post<{name: string}>(
       this.url,
-      postData
+      postData,
+      {
+        observe: 'response'
+      }
     )
     //if a component doesn't care about the response - subscribe in service is okay
     .subscribe(responseData => {
@@ -35,13 +38,19 @@ export class PostsService {
   //map operator - allow to get some data and return new data which is rewrapped into an observable
   //tell which type of object the retrieved data is -> <{[key: string]: Post}>
   fetchPosts(){
+    let searchParams = new HttpParams();
+    //attach multiple params
+    searchParams = searchParams.append('print', 'pretty');
+    searchParams = searchParams.append('custom', 'key');
+
     //setting up in service and subscribing in the component
     return this.http
       .get<{[key: string]: Post}>(this.url,
         {
           //passing key-value-pairs of the header
-          headers: new HttpHeaders({ 'Custom Header': 'Hello'}),
-          
+          headers: new HttpHeaders({ 'Custom-Header': 'Hello'}),
+          //changing format firebase returns its data
+          params: searchParams
         })
       .pipe(map(responseData => {
         const postsArray: Post[] = [];
